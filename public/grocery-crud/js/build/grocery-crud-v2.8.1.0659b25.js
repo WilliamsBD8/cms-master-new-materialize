@@ -18994,8 +18994,11 @@ var FieldRowWrapper = function (_React$Component) {
                 textEditorType = _props.textEditorType,
                 inputUpdates = _props.inputUpdates;
             
+            
             var type_input = data.fieldType;
-            var label_input = type_input == 'upload' || type_input == 'relational' ? true : false;
+            var label_input = (type_input == 'upload' || type_input == 'relational') ||
+                    (type_input == "backend_callback" && ((_props.data.defaultValue || '').includes('select-colors') || (_props.data.fieldValue || '').includes('select-colors')));
+
 
             return _react2.default.createElement(
                 'div',

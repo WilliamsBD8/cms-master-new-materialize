@@ -21,6 +21,8 @@ class PermissionFilter implements FilterInterface
         $method =  $request->uri->getSegment(2);
         $permission = new Permission();
 
+        // var_dump($request->uri); die;
+
         if($url == 'table' || $url == 'config') {
             $data = $permission->select('*')
                 ->join('menus', 'menus.id = permissions.menu_id')
@@ -38,6 +40,24 @@ class PermissionFilter implements FilterInterface
             }
         }else if($url == 'dashboard'){
             if($method != ''){
+                
+                $segments = $request->uri->getSegments();
+
+                $method = $request->getMethod();
+
+                if (in_array('data', $segments) || $method == 'post' || $method == 'put' || $method == 'delete') {
+                    $referer = $request->getHeaderLine('Referer');
+                    if ($referer && strpos($referer, 'dashboard/') !== false) {
+                        $path = parse_url($referer, PHP_URL_PATH); // Extrae la ruta de la URL completa
+                        $method = substr($path, strpos($path, 'dashboard/') + strlen('dashboard/'));
+                    }
+
+                }else{
+                    array_shift($segments);
+                    $method = implode('/', $segments);
+                }
+
+                
                 $data = $permission->select('*')
                 ->join('menus', 'menus.id = permissions.menu_id')
                 ->join('roles', 'roles.id = permissions.role_id')

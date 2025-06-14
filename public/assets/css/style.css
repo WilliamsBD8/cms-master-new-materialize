@@ -18,3 +18,15 @@
 .options-on-save{
     display: none !important;
 }
+
+.w-100{
+    width: 100% !important;
+}
+
+.icon-move{
+    cursor: move;
+}
+
+.border-radius{
+    border-radius: 15px !important;
+}

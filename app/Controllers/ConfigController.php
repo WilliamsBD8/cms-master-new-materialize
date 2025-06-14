@@ -4,6 +4,8 @@
 namespace App\Controllers;
 
 
+use App\Models\Password;
+
 use App\Models\Configuration;
 use App\Traits\Grocery;
 
@@ -28,12 +30,16 @@ class ConfigController extends BaseController
             case 'users':
                 $title = 'Usuarios';
                 $subtitle = 'Listado de usuarios.';
-                $this->crud->unsetColumns(['password']);
-                $this->crud->fieldType('password', 'password');
-                $this->crud->callbackBeforeInsert(function ($stateParameters) {
-                    $stateParameters->data['password'] = password_hash($stateParameters->data['password'], PASSWORD_DEFAULT);
-                    return $stateParameters;
-                });
+                $this->crud->setActionButton('Contraseñas', 'fa fa-lock', function ($row) {
+                    return base_url(['config', 'users', $row->id]);
+                }, false);
+                
+                // $this->crud->unsetColumns(['password']);
+                // $this->crud->fieldType('password', 'password');
+                // $this->crud->callbackBeforeInsert(function ($stateParameters) {
+                //     $stateParameters->data['password'] = password_hash($stateParameters->data['password'], PASSWORD_DEFAULT);
+                //     return $stateParameters;
+                // });
                 // $this->crud->callbackBeforeUpdate(function ($stateParameters) {
                 //     if(strlen($stateParameters->data['password']) < 20) {
                 //         $stateParameters->data['password'] = password_hash($stateParameters->data['password'], PASSWORD_DEFAULT);
@@ -105,6 +111,65 @@ class ConfigController extends BaseController
         }
 
         $this->viewTable($output, $title, $subtitle);
+    }
+    
+    public function detail($data, $id)
+    {
+        $title = '';
+        $description = '';
+        $this->id = $id;
+        if($data) {
+            
+            switch ($data) {
+                case 'users':
+                    $this->crud->setTable('passwords');
+                    $this->crud->where(['user_id' => $this->id]);
+                    $this->crud->unsetDelete();
+                    $this->crud->unsetEdit();
+                    $this->crud->unsetColumns(['password', 'user_id', 'updated_at']);
+                    $this->crud->fieldType('password', 'password');
+                    $this->crud->addFields(['password']);
+                    $this->crud->callbackBeforeInsert(function ($info){
+                        $info->data['created_at']   = date('Y-m-d H:i:s');
+                        $info->data['updated_at']   = date('Y-m-d H:i:s');
+                        $info->data['user_id']      = $this->id;
+                        $info->data['temporary']    = 'Si';
+                        $info->data['password']     = password_hash($info->data['password'], PASSWORD_DEFAULT);
+                        $p_model = new Password();
+                        $passwords = $p_model->where(['user_id' => $this->id, 'status' => 'active'])->findAll();
+                        foreach ($passwords as $key => $password) {
+                            $p_model->save([
+                                'id'        => $password->id,
+                                'status'    => 'inactive'
+                            ]);
+                        }
+                        return $info;
+                    });
+
+                    $this->crud->displayAs([
+                        'attempts'      => 'N° Intentos',
+                        'status'        => 'Estado',
+                        'created_at'    => 'Fecha de creación',
+                        'password'      => 'Contraseña',
+                        'temporary'     => 'Temporal'
+                    ]);
+                    break;
+                default:
+                    break;   
+            }
+            
+
+            $output = $this->crud->render();
+            if (isset($output->isJSONResponse) && $output->isJSONResponse) {
+                header('Content-Type: application/json; charset=utf-8');
+                echo $output->output;
+                exit;
+            }
+
+            $this->viewTable($output, $title, $description);
+        } else {
+            throw PageNotFoundException::forPageNotFound();
+        }
     }
 
 

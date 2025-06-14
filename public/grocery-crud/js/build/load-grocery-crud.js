@@ -12,6 +12,34 @@ $(() => {
   });
 });
 
+$(document).on('shown.bs.modal', '.gc-insert-modal .modal', function () {
+    $(this).find('input:first').focus();
+    setTimeout(() => {
+      const select2 = $('.select2');
+      if (select2.length) {
+        select2.each(function () {
+          var $this = $(this);
+
+          if ($this.hasClass('select2-hidden-accessible')) {
+            $this.select2('destroy');
+          }
+          select2Focus($this);
+          $this.wrap('<div class="position-relative"></div>').select2({
+              dropdownParent: $this.parent(),
+              allowedClear: true,
+              templateSelection: function (data) {
+                if (!data.id) return data.text;
+
+                const classList = $(data.element).attr('class');
+                return $(`<span class=""><i class="ri-square-fill ${classList}"></i> ${data.text}</span>`);
+              }
+          });
+        });
+      }
+      
+    }, 500)
+});
+
 function replace_colors(){
   if($('input[name="primary_color"]').val() != undefined){
       var primary     = $('input[name="primary_color"]').val().trim();

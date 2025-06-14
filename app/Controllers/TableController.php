@@ -30,6 +30,16 @@ class TableController extends BaseController
 
         if($component) {
             $this->crud->setTable($component[0]->table);
+            $this->crud->callbackBeforeInsert(function ($stateParameters) {
+                $stateParameters->data['created_at'] = date('Y-m-d H:i:s');
+                $stateParameters->data['updated_at'] = date('Y-m-d H:i:s');
+
+                return $stateParameters;
+            });
+            $this->crud->callbackBeforeUpdate(function ($stateParameters) {
+                $stateParameters->data['updated_at'] = date('Y-m-d H:i:s');
+                return $stateParameters;
+            });
             switch ($component[0]->url) {
                 case 'usuarios':
                     $this->crud->setActionButton('Algo mas que aqeullo', 'fa fa-bars', function ($row) {
@@ -46,6 +56,55 @@ class TableController extends BaseController
                 case 'menus':
                     $this->crud->setTexteditor(['description']);
                     break;
+
+                case 'task_states':
+                    $select_colors = ["color_background", "color_font"];
+
+                    $this->crud->callbackColumn("name", function($value, $row){
+                        $colores_font = explode(" ", $row->color_font);
+                        $colores_font = 'text-' . implode(" text-", $colores_font);
+
+                        return "<div class='badge rounded-pill $row->color_background $colores_font'>$value</div>";
+                    });
+
+                    $colors = getColors(true);
+
+                    foreach ($select_colors as $key => $value) {
+
+                        $this->crud->callbackColumn($value, function($value, $row){
+                            return "<div style='padding:15px' class='$value'></div>";
+                        });
+
+                        $this->crud->callbackAddField($value, function () use ($colors, $value) {
+                            $html = '<div class="form-floating form-floating-outline select-colors"> <select name="'.$value.'" class="form-floating form-floating-outline select2">';
+                            $html .= '<option value="">Seleccionar valor</option>';
+                            foreach ($colors as $color) {
+                                $colores_font = explode(" ", $color->name);
+                                $colores_font = 'text-' . implode(" text-", $colores_font);
+                                
+                                $html .= '<option value="' . $color->name . '" data-id="'.$color->value.'" class="'.$colores_font.'">' . $color->name . '</option>';
+                            }
+                            $html .= '</select></div>';
+                            return $html;
+                        });
+        
+                        $this->crud->callbackEditField($value, function ($fieldValue, $primaryKey) use ($colors, $value) {
+                            $html = '<div class="form-floating form-floating-outline select-colors"><select name="'.$value.'" class="form-floating form-floating-outline select2">';
+                            $html .= '<option value="">Seleccionar valor</option>';
+                            foreach ($colors as $color) {
+                                $colores_font = explode(" ", $color->name);
+                                $colores_font = 'text-' . implode(" text-", $colores_font);
+                                $selected = ($color->name === $fieldValue) ? 'selected' : '';
+                                $html .= '<option value="' . $color->name . '" class="'.$colores_font.'" ' . $selected . '>' . $color->name . '</option>';
+                            }
+                            $html .= '</select></div>';
+                            return $html;
+                        });
+                    }
+                    $this->crud->unsetEditFields(['created_at', 'updated_at', 'deleted_at']);
+                    $this->crud->unsetAddFields(['created_at', 'updated_at', 'deleted_at']);
+                    break;
+
                 default:
                 break;   
             }

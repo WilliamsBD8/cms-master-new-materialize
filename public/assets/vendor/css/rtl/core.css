@@ -6150,6 +6150,10 @@ textarea.form-control-lg {
   --bs-offcanvas-title-line-height: 1.75rem;
 }
 
+.offcanvas.form{
+  --bs-offcanvas-width: 82% !important;
+}
+
 @media (max-width: 575.98px) {
   .offcanvas-sm {
     position: fixed;
@@ -6164,6 +6168,10 @@ textarea.form-control-lg {
     background-clip: padding-box;
     outline: 0;
     transition: var(--bs-offcanvas-transition);
+  }
+
+  .offcanvas.form{
+    --bs-offcanvas-width: 100% !important;
   }
 }
 @media (max-width: 575.98px) and (prefers-reduced-motion: reduce) {
@@ -6229,6 +6237,9 @@ textarea.form-control-lg {
 }
 
 @media (max-width: 767.98px) {
+  .offcanvas.form{
+    --bs-offcanvas-width: 100% !important;
+  }
   .offcanvas-md {
     position: fixed;
     bottom: 0;

@@ -14,7 +14,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title><?= $this->renderSection('title') ?></title>
+    <title><?= isset(configInfo()['name_app']) && !empty(configInfo()['name_app']) ? (string) configInfo()['name_app'] : 'IplanetColombia' ?> <?= $this->renderSection('title') ?></title>
 
     <meta name="description" content="" />
 
@@ -56,6 +56,12 @@
       }   
     </style>
 
+    <link rel="stylesheet" href="<?= base_url(['assets/css/colors.css']) ?>" />
+
+    <link rel="stylesheet" href="<?= base_url(['assets/vendor/libs/toastr/toastr.css']) ?>" />
+    
+    <link rel="stylesheet" href="<?= base_url(['assets/vendor/libs/select2/select2.css']) ?>" />
+
     <!-- Icons -->
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/fonts/remixicon/remixicon.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/fonts/flag-icons.css"]) ?>" />
@@ -74,6 +80,8 @@
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/typeahead-js/typeahead.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/apex-charts/apex-charts.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/swiper/swiper.css"]) ?>" />
+    <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/sweetalert2/sweetalert2.css"]) ?>" />
+    <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/dropzone/dropzone.css"]) ?>" />
 
     <!-- Page CSS -->
     <?= $this->renderSection('styles') ?>
@@ -156,6 +164,8 @@
     <script src="<?= base_url(["assets/vendor/libs/i18n/i18n.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/libs/typeahead-js/typeahead.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/js/menu.js"]) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/toastr/toastr.js']) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/sweetalert2/sweetalert2.js']) ?>"></script>
 
 
     <!-- endbuild -->
@@ -165,9 +175,11 @@
     <!-- Vendors JS -->
     <script src="<?= base_url(["assets/vendor/libs/apex-charts/apexcharts.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/libs/swiper/swiper.js"]) ?>"></script>
-
+    <script src="<?= base_url(['assets/vendor/libs/select2/select2.js']) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/dropzone/dropzone.js']) ?>"></script>
     <!-- Page JS -->
-    <script src="<?= base_url(["master/js/functions/functions.js"]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/functions.js?v=".getCommit()]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/fetchHelper.js?v=".getCommit()]) ?>"></script>
     
     <?= $this->renderSection('javaScripts') ?>
   </body>

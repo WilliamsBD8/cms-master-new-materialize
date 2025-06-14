@@ -33,7 +33,7 @@ async function onSubmit(event) {
       $('#btn-send').html('Iniciar sesión');
       setTimeout(() => {
         window.location.href = respond.url;
-      }, 3000)
+      }, 500)
     }
   })
 

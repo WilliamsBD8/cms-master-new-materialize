@@ -45,7 +45,19 @@ $routes->get('password', 'PasswordController::index');
 $routes->post('password/updated', 'PasswordController::updated');
 
 $routes->group('dashboard', function ($routes){
-	$routes->get('', 'DashboardController::index');
+	$routes->get('', 'TaskController::index');
+	
+	$routes->group('task', function($routes){
+		$routes->get('data', 'TaskController::dataList');
+		$routes->get('list', 'TaskController::list');
+		$routes->get('tablero', 'TaskController::tablero');
+
+		
+        $routes->post('', 'TaskController::store');
+        $routes->put('', 'TaskController::updated');
+		
+	});
+
 });
 
 $routes->get('/login', 'AuthController::login');
@@ -63,6 +75,9 @@ $routes->post('/config/(:segment)', 'ConfigController::index/$1');
 $routes->get('/config/(:segment)', 'ConfigController::index/$1');
 $routes->post('/table/(:segment)', 'TableController::index/$1');
 $routes->get('/table/(:segment)', 'TableController::index/$1');
+
+$routes->post('/config/(:segment)/(:segment)', 'ConfigController::detail/$1/$2');
+$routes->get('/config/(:segment)/(:segment)', 'ConfigController::detail/$1/$2');
 
 /**
  * --------------------------------------------------------------------

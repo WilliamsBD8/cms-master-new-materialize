@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/page'); ?>
 
 <?= $this->section('styles'); ?>
+    <link rel="stylesheet" href="<?= base_url(['assets/vendor/libs/select2/select2.css']) ?>" />
     <link rel="stylesheet" href="<?= base_url(["grocery-crud/css/jquery-ui/jquery-ui.css"]) ?> ">
     <link rel="stylesheet" href="<?= base_url(["grocery-crud/css/grocery-crud-v2.8.1.0659b25.css"]) ?> ">
     <!-- <link rel="stylesheet" href="<?= base_url(["grocery-crud/css/bootstrap/bootstrap.css"]) ?> "> -->
@@ -33,6 +34,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('javaScripts'); ?>
+    <script src="<?= base_url(['assets/vendor/libs/select2/select2.js']) ?>"></script>
 
     <script src="<?= base_url(["grocery-crud/js/libraries/ckeditor/ckeditor.adapter-jquery.js"]) ?>"></script>
     <script src="<?= base_url(["grocery-crud/js/libraries/jquery-ui.js"]) ?>"></script>
