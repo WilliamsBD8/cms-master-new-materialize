@@ -55,6 +55,8 @@ $routes->group('dashboard', function ($routes){
 		
         $routes->post('', 'TaskController::store');
         $routes->put('', 'TaskController::updated');
+
+		$routes->post('comment', 'TaskController::comment');
 		
 	});
 

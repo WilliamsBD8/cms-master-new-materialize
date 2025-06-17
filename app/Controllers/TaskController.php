@@ -13,6 +13,7 @@ use App\Models\TaskActivity;
 use App\Models\TaskSprint;
 use App\Models\TaskState;
 use App\Models\TaskFile;
+use App\Models\TaskComment;
 
 class TaskController extends BaseController
 {
@@ -24,6 +25,7 @@ class TaskController extends BaseController
     private $taskActivities;
     private $taskSprints;
     private $tf_model;
+    private $tc_model;
 
     public function __construct(){
         
@@ -32,7 +34,7 @@ class TaskController extends BaseController
         $ts_model = new TaskState();
         $tsp_model = new TaskSprint();
         $this->tf_model = new TaskFile();
-        
+        $this->tc_model = new TaskComment();
 
         $this->users = $u_model->where(['users.status' => 'Active'])->orderBy('users.name', 'ASC')->asObject()->findAll();
 
@@ -266,6 +268,21 @@ class TaskController extends BaseController
             return $this->respond(['title' => 'Error en el servidor', 'error' => "No se pudo actualizar la tarea"], 500);
             
 
+        }catch(\Exception $e){
+			return $this->respond(['title' => 'Error en el servidor', 'error' => $e->getMessage()], 500);
+		}
+    }
+
+    public function comment(){
+        try{
+            $data = $this->request->getJson();
+
+            $this->tc_model->save([
+                'task_id'   => $data->task_id,
+                'comment'   => $data->task_comment,
+                'user_id'   => session('user')->id
+            ]);
+            return $this->respond(['title' => 'Comentario creado', 'message' => 'El comentario se añadio existosamente.'], 200);
         }catch(\Exception $e){
 			return $this->respond(['title' => 'Error en el servidor', 'error' => $e->getMessage()], 500);
 		}

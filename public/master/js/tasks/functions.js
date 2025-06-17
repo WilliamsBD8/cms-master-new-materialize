@@ -75,6 +75,5 @@ async function getColors(){
 window.addEventListener('load', async function () {
     await getTasks({}, 500);
     await getColors();
-    loadData();
-    
+    loadData();   
 })

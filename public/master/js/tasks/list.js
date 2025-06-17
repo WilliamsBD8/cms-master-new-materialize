@@ -33,11 +33,42 @@ const loadData = async () => {
                         </div>
                         <div class="list-desc">
                             ${task.description ? task.description : ""}
+                            
+                    <ul class="list-group list-group-flush">
+                              <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-top-0 p-0">
+                                <div class="d-flex flex-wrap align-items-center">
+                                  <ul class="list-unstyled users-list d-flex align-items-center avatar-group m-0 me-2">
+                                    ${
+                                        task.comments.length > 0 ? `
+                                            <li onclick="comments(${task.id})" class="avatar pull-up d-inline-flex position-relative" data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" data-bs-original-title="Comentarios">
+                                                <span class="avatar-initial rounded-circle amber"><i class="ri-question-answer-line"></i></span>
+                                                <span class="position-absolute top-80 start-0 translate-middle badge badge-center rounded-pill amber lighten-5 text-amber">${task.comments.length}</span>
+                                            </li>
+                                        ` : ""
+                                    }
+                                  
+                                    
+                                    ${task.files.reduce((acc, file) =>  {
+                                        const data = getIcon(file.file.split(".")[1]);
+                                        
+                                        const li = `
+                                            <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" data-bs-original-title="${file.name}">
+                                                <span class="avatar-initial rounded-circle ${data.color} lighten-4"><a class="text-${data.color}" href="${base_url([`uploads/task_${task.id}`,file.file])}" target="_blank"><i class="${data.icon}"></i></a></span>
+                                            </li>
+                                        `
+                                        acc.push(li)
+                                        return acc
+                                    }, []).join("")}
+                                  </ul>
+                                </div>
+                              </li>
+                            </ul>
                         </div>
                     </div>
                     ${ task.task_state_id != 5 ? `
                             <div class="list-right">
-                                <div><a class="text-light-blue" href="javascript:void(0)"  data-bs-toggle="offcanvas" data-bs-target="#canvas-form-edit" aria-controls="offcanvasEnd" onclick="edit_form(${task.id})"><i class="ri-edit-2-line"></i></a></div>
+                                <div><a class="text-amber" href="javascript:void(0)"  data-bs-toggle="offcanvas" data-bs-target="#canvas-form-comment" aria-controls="offcanvasEnd" onclick="comment_form(${task.id})"><i class="ri-chat-new-line"></i></a></div>
+                                <div><a class="text-light-blue" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#canvas-form-edit" aria-controls="offcanvasEnd" onclick="edit_form(${task.id})"><i class="ri-edit-2-line"></i></a></div>
                                 <div><a class="delete-task text-red" href="javascript:void(0)" onclick="cancelTask(${task.id})"><i class="ri-delete-bin-5-line"></i></a></div>
                             </div>
                         ` : ""}
@@ -48,6 +79,12 @@ const loadData = async () => {
     }, []);
 
     task_div.html(tasks_list.join(""));
+
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
     Sortable.create(task_div[0], {
         animation: 150,
         handle: "i.icon-move",
@@ -109,6 +146,50 @@ const loadData = async () => {
     })
 }
 
+const getIcon = (extencion) => {
+    console.log(extencion)
+    color = "";
+    icon = "";
+    switch(extencion){
+        case "pdf":
+            icon = "ri-file-pdf-2-line";
+            color = "red";
+            break;
+        case "doc":
+            icon = "ri-file-word-2-line";
+            color = "blue";
+            break;
+        case "xlsx":
+            icon = "ri-file-excel-2-line";
+            color = "green";
+            break;
+        case "ppt":
+            icon = "ri-file-ppt-2-line";
+            color = "orange";
+            break;
+        case "txt":
+            icon = "ri-file-text-line";
+            color = "blue-grey";
+            break;
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+        case 'bmp':
+        case 'tiff':
+        case 'ico':
+        case 'webp':
+            icon = "ri-image-line";
+            color = "amber";
+            break;
+        default:
+            icon = "ri-file-2-line";
+            color = "grey";
+            break;
+    }
+    return {icon, color}
+}
+
 async function cancelTask(id){
     const task = tasksData.find(t => t.id == id)
     Swal.fire({
@@ -144,4 +225,78 @@ async function cancelTask(id){
             await loadData();
         }
     })
+}
+
+function comment_form(id){
+    $('#form-comment-task #task_id').val(id);
+}
+
+function comments(id){
+
+    const task = tasksData.find(t => t.id == id);
+    const comments = task.comments;
+
+    $("#canvas-comments .comments ul").html(`
+        ${
+
+            comments.reduce((acc, comment) => {
+
+                const li = `
+                    <li class="timeline-item timeline-item-transparent">
+                        <span class="timeline-point timeline-point-success"></span>
+                        <div class="timeline-event">
+                            <div class="timeline-header mb-3">
+                                <small class="text-muted">${comment.created_at}</small>
+                            </div>
+                            <p class="mb-2">${comment.comment}</p>
+
+                            <div class="d-flex justify-content-between flex-wrap gap-2 mb-1_5">
+                              <div class="d-flex flex-wrap align-items-center">
+                                <div class="avatar avatar-sm me-2">
+                                  <img src="${comment.photo ? base_url(['assets/upload/images', comment.photo]) : base_url(['assets/img/avatars/1.png'])}" alt="Avatar" class="rounded-circle">
+                                </div>
+                                <div>
+                                  <p class="mb-0 small fw-medium">${comment.user_name}</p>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </li>
+                `
+                acc.push(li)
+                return acc;
+            }, []).join("")
+
+        }
+    `);
+
+    const offcanvasElement = document.getElementById('canvas-comments');
+    const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+    offcanvas.show();
+}
+
+async function sendTaskComment(e) {
+    e.preventDefault();
+    const {isValid, data} = validData("form-comment-task");
+    if(!isValid){
+        return alert('Campos obligatorios', 'Por favor llenar los campos requeridos.', 'warning', 5000)
+    }
+    const url = base_url(['dashboard/task/comment']);
+    await fetchHelper.post(url, data);
+    await getTasks();
+    await loadData();
+    $('#canvas-form-comment .btn-close').click();
+    return alert('Comentario creado', 'El comentario se añadio existosamente.', 'success', 5000);
+}
+
+const offcanvasElementComment = document.getElementById('canvas-form-comment');
+
+if(offcanvasElementComment){
+  offcanvasElementComment.addEventListener('shown.bs.offcanvas', function () {
+    console.log('El offcanvas se ha abierto');
+    
+    initQuill("form-comment-task");
+  
+  });
+
 }

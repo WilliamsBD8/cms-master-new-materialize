@@ -102,12 +102,12 @@ function validData(id_form){
 
           if (isRequired && plainText === '') {
               isValid = false;
-              quill.root.classList.add('invalid');
+              $(this).addClass('invalid');
           } else {
-              quill.root.classList.remove('invalid');
+              $(this).removeClass('invalid');
           }
 
-          data[id.replace(/\-/g, "_")] = htmlContent;
+          data[id.replace(/\-/g, "_")] = htmlContent == '<p><br></p>' ? '' : htmlContent;
       }
   });
 
@@ -166,12 +166,6 @@ function initQuill(form = "form-add-task", reference = 'full-editor'){
         }
     ],
     [
-        {
-            header: '1'
-        },
-        {
-            header: '2'
-        },
         'blockquote',
         'code-block'
     ],
@@ -200,14 +194,17 @@ function initQuill(form = "form-add-task", reference = 'full-editor'){
     if (!id) return;
 
     const description = el.getAttribute('data-description');
+    const placeholder = el.getAttribute('data-placeholder');
+
+    const isRequired = el.classList.contains('required');
 
     $(`#${form} .container-editor`).html(`
-      <div class="full-editor" id="${id}">${description ?? ""}</div>  
+      <div class="full-editor ${isRequired ? 'required' : ''}" id="${id}">${description ?? ""}</div>  
     `);
 
     const editor = new Quill(`#${id}`, {
       bounds: `#${id}`,
-      placeholder: 'Descripción...',
+      placeholder: `${placeholder ? placeholder : "Descripción"}${isRequired ? '*' : ''} ...`,
       modules: {
         formula: true,
         toolbar: fullToolbar

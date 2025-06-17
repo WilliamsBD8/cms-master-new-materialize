@@ -196,4 +196,56 @@
             </form>
         </div>
     </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="canvas-form-comment" aria-labelledby="canvas-form-comment-label">
+        <div class="offcanvas-header">
+            <h5 id="canvas-form-comment-label" class="offcanvas-title">Comentar tarea</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-0 flex-grow-0">
+            <form action="" class="row" onsubmit="sendTaskComment(event)" id="form-comment-task">
+
+                <input type="hidden" id="task_id">
+
+                <div class="col-12 mb-2 container-editor">
+                    <div class="full-editor required" id="task-comment" data-placeholder="Comentario">
+                        
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <button type="submit" class="btn btn-primary mb-2 d-grid w-100 waves-effect waves-light">Comentar</button>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <button type="button" class="btn btn-outline-secondary d-grid w-100 waves-effect" data-bs-dismiss="offcanvas">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="canvas-comments" aria-labelledby="canvas-comments-label">
+        <div class="offcanvas-header">
+            <h5 id="canvas-comments-label" class="offcanvas-title">Comentarios</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-0 flex-grow-0">
+            <div class="comments">
+                <ul class="timeline mb-0 pb-5">
+                        
+                </ul>        
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <button type="button" class="btn btn-outline-secondary d-grid w-100 waves-effect" data-bs-dismiss="offcanvas">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

@@ -120,6 +120,15 @@ class Task extends Model
                     $file->size = filesize($path);
                     $file->onDelete = false;
                 }
+
+                $task->comments = $this->builder('task_comments')
+                    ->select('task_comments.*, users.name as user_name', 'users.photo')
+                    ->where([
+                        'task_id' => $task->id
+                    ])
+                    ->join('users', 'users.id = task_comments.user_id')
+                    ->orderBy('task_comments.created_at', 'DESC')
+                    ->get()->getResult();
             }
         }
         return $data;
