@@ -100,7 +100,7 @@ class Task extends Model
 
     protected function functionAfterFind(array $data){
         
-        log_message("info", json_encode($data));
+        log_message("info", "Despues de encontrar". json_encode($data));
         if(isset($data['id'])){
             $data['data']->files = $this->builder('task_files')
                 ->where([
@@ -108,27 +108,29 @@ class Task extends Model
                 ])->get()->getResult();
         }else{
             foreach($data['data'] as $task){
-                $task->files = $this->builder('task_files')
-                    ->select('task_files.*, task_files.file as name')
-                    ->where([
-                        'task_id' => $task->id
-                    ])->get()->getResult();
+                if(isset($task->id)){
+                    $task->files = $this->builder('task_files')
+                        ->select('task_files.*, task_files.file as name')
+                        ->where([
+                            'task_id' => $task->id
+                        ])->get()->getResult();
+        
+                    foreach($task->files as $file){
+                        $path = FCPATH . "uploads/task_{$task->id}/{$file->file}";
+                        $file->base64 = base64_encode(file_get_contents($path));
+                        $file->size = filesize($path);
+                        $file->onDelete = false;
+                    }
     
-                foreach($task->files as $file){
-                    $path = FCPATH . "uploads/task_{$task->id}/{$file->file}";
-                    $file->base64 = base64_encode(file_get_contents($path));
-                    $file->size = filesize($path);
-                    $file->onDelete = false;
+                    $task->comments = $this->builder('task_comments')
+                        ->select('task_comments.*, users.name as user_name', 'users.photo')
+                        ->where([
+                            'task_id' => $task->id
+                        ])
+                        ->join('users', 'users.id = task_comments.user_id')
+                        ->orderBy('task_comments.created_at', 'DESC')
+                        ->get()->getResult();
                 }
-
-                $task->comments = $this->builder('task_comments')
-                    ->select('task_comments.*, users.name as user_name', 'users.photo')
-                    ->where([
-                        'task_id' => $task->id
-                    ])
-                    ->join('users', 'users.id = task_comments.user_id')
-                    ->orderBy('task_comments.created_at', 'DESC')
-                    ->get()->getResult();
             }
         }
         return $data;
