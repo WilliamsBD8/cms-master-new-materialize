@@ -65,7 +65,7 @@ class PermissionFilter implements FilterInterface
                 ->get()
                 ->getResult();
                 
-                if(count($data) == 0 && session('user')->role_id != 1) {
+                if((count($data) == 0 && session('user')->role_id != 1) && !in_array('data', $segments)) {
                     echo  view('errors/html/error_401');
                     exit;
                 }

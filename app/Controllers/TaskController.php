@@ -73,37 +73,42 @@ class TaskController extends BaseController
 
 
     public function dataList(){
+        try{
+            $t_model = new Task();
+            $filter = (object) $this->request->getGet();
+            $t_model->setFilter($filter);
+            $tasks = $t_model
+                ->select([
+                    'tasks.*',
+    
+                    'ts.name as task_state_name',
+    
+                    'ta.name as task_activity_name',
+                    'ta.date_start as task_date_start',
+                    'ta.date_end as task_date_end',
+    
+                    'ts.color_background as task_state_color_background',
+                    'ts.color_font as task_state_color_font',
+    
+                    'tsp.name as sprint',
+    
+                    'u.name as username',
+                ])
+                ->join('task_states as ts', 'ts.id = tasks.task_state_id', 'left')
+                ->join('task_activities as ta', 'ta.id = tasks.task_activity_id', 'left')
+                ->join('users as u', 'u.id = tasks.task_user_id', 'left')
+                ->join('task_sprints as tsp', 'tsp.id = tasks.task_sprint_id', 'left')
+                ->orderBy('orden', 'DESC')
+                ->orderBy('id', 'DESC')
+            ->findAll();
+    
+            return $this->respond([
+                'tasks' => $tasks
+            ]);
+        }catch(\Exception $e){
+			return $this->respond(['title' => 'Error en el servidor', 'error' => $e->getMessage()], 500);
+		}
 
-        $t_model = new Task();
-        $filter = (object) $this->request->getGet();
-        $t_model->setFilter($filter);
-        $tasks = $t_model
-            ->select([
-                'tasks.*',
-
-                'ts.name as task_state_name',
-
-                'ta.name as task_activity_name',
-                'ta.date_start as task_date_start',
-                'ta.date_end as task_date_end',
-
-                'ts.color_background as task_state_color_background',
-                'ts.color_font as task_state_color_font',
-
-                'tsp.name as sprint',
-
-                'u.name as username',
-            ])
-            ->join('task_states as ts', 'ts.id = tasks.task_state_id', 'left')
-            ->join('task_activities as ta', 'ta.id = tasks.task_activity_id', 'left')
-            ->join('users as u', 'u.id = tasks.task_user_id', 'left')
-            ->join('task_sprints as tsp', 'tsp.id = tasks.task_sprint_id', 'left')
-            ->orderBy('orden', 'DESC')
-            ->orderBy('id', 'DESC')
-        ->findAll();
-        return $this->respond([
-            'tasks' => $tasks
-        ]);
     }
 
     public function store(){
