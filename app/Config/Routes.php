@@ -46,6 +46,12 @@ $routes->post('password/updated', 'PasswordController::updated');
 
 $routes->group('dashboard', function ($routes){
 	$routes->get('', 'DashboardController::index');
+	$routes->group('perfile', function ($routes){
+		$routes->get('', 'UserController::perfile');
+		$routes->put('', 'UserController::updateUser');
+		$routes->post('', 'UserController::updatePhoto');
+		$routes->delete('(:num)', 'UserController::deleteUser/$1');
+	});
 });
 
 $routes->get('/login', 'AuthController::login');
@@ -56,9 +62,6 @@ $routes->post('/forgot_password', 'AuthController::forgotPassword');
 $routes->post('/validation', 'AuthController::validation');
 $routes->get('/logout', 'AuthController::logout');
 $routes->get('/about', 'DashboardController::about');
-$routes->get('/perfile', 'UserController::perfile');
-$routes->post('/update_photo', 'UserController::updatePhoto');
-$routes->post('/update_user', 'UserController::updateUser');
 $routes->post('/config/(:segment)', 'ConfigController::index/$1');
 $routes->get('/config/(:segment)', 'ConfigController::index/$1');
 $routes->post('/table/(:segment)', 'TableController::index/$1');

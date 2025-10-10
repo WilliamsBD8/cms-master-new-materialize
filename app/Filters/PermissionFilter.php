@@ -36,16 +36,54 @@ class PermissionFilter implements FilterInterface
                     exit;
                 }
             }
-        }else if($url == 'dashboard'){
-            if($method != ''){
-                $data = $permission->select('*')
-                ->join('menus', 'menus.id = permissions.menu_id')
-                ->join('roles', 'roles.id = permissions.role_id')
-                ->where(['menus.url' =>  $method, 'role_id' => session('user')->role_id ] )
-                ->get()
-                ->getResult();
+        }else if($url == 'dashboard' && $method != 'perfile'){
+            $urls = $request->uri->getSegments();
+            if(count($urls) > 1){
+                $method = $request->getMethod();
+                array_shift($urls);
+                if (is_numeric(end($urls))) {
+                    array_pop($urls);
+                }
+
+                switch (end($urls)) {
+                    case 'create':
+                    case 'update':
+                    case 'pdf':
+                    case 'indicators':
+                        array_pop($urls);
+                        break;
+                    
+                    default:
+                        break;
+                }
+
+                $url_option = implode("/", $urls);
+                $permission->select('*')
+                    ->join('menus', 'menus.id = permissions.menu_id')
+                    ->join('roles', 'roles.id = permissions.role_id')
+                    ->where(['menus.url' =>  $url_option, 'role_id' => session('user')->role_id ] );
+
+                switch ($method) {
+                    case 'get':
+                        $permission->where(['permissions.read' => 1]);
+                        break;
+                    case 'post':
+                        $permission->where(['permissions.created' => 1]);
+                        break;
+                    case 'put':
+                        $permission->where(['permissions.updated' => 1]);
+                        break;
+                    case 'delete':
+                        $permission->where(['permissions.delete' => 1]);
+                        break;
+                    
+                    default:
+                    
+                        break;
+                }
+                $data = $permission->first();
                 
-                if(count($data) == 0 && session('user')->role_id != 1) {
+                if(empty($data) && session('user')->role_id != 1) {
                     echo  view('errors/html/error_401');
                     exit;
                 }

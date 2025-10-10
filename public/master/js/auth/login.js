@@ -19,7 +19,8 @@ async function onSubmit(event) {
   $('#btn-send').attr('disabled', true);
   $('#btn-send').html('Enviando... <i class="ri-restart-line ri-spin"></i>');
 
-  await proceso_fetch(url, data).then(respond => {
+  const respond = await fetchHelper.post(url, data, {}, 500);
+  // .then(respond => {
     if(respond.status == 403){
       $('#card-error h5').html(respond.title);
       $('#card-error p').html(respond.message);
@@ -31,10 +32,8 @@ async function onSubmit(event) {
       $('#card-success p').html(respond.message);
       $('#card-success').show();
       $('#btn-send').html('Iniciar sesión');
-      setTimeout(() => {
-        window.location.href = respond.url;
-      }, 3000)
+      window.location.href = respond.url;
     }
-  })
+  // })
 
 }

@@ -18,3 +18,7 @@
 .options-on-save{
     display: none !important;
 }
+
+.gc-container input[type="checkbox"]{
+    
+}

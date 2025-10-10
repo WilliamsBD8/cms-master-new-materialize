@@ -42,6 +42,9 @@
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/fonts/remixicon/remixicon.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/fonts/flag-icons.css"]) ?>" />
 
+    <link rel="stylesheet" href="<?= base_url(['assets/vendor/libs/toastr/toastr.css']) ?>" />
+    <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/sweetalert2/sweetalert2.css"]) ?>" />
+
     <!-- Menu waves for no-customizer fix -->
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/node-waves/node-waves.css"]) ?>" />
 
@@ -178,6 +181,8 @@
     <script src="<?= base_url(["assets/vendor/libs/i18n/i18n.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/libs/typeahead-js/typeahead.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/js/menu.js"]) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/toastr/toastr.js']) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/sweetalert2/sweetalert2.js']) ?>"></script>
 
     <!-- endbuild -->
 
@@ -191,8 +196,10 @@
 
     <!-- Page JS -->
     <!-- <script src="<?= base_url(["assets/js/pages-auth.js"]) ?>"></script> -->
-    <script src="<?= base_url(["master/js/functions/functions.js"]) ?>"></script>
-    <script src="<?= base_url(["master/js/auth/login.js"]) ?>"></script>
+    
+    <script src="<?= base_url(["master/js/functions/functions.js?v=".getCommit()]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/fetchHelper.js?v=".getCommit()]) ?>"></script>
+    <script src="<?= base_url(["master/js/auth/login.js?v=".getCommit()]) ?>"></script>
 </body>
 
 </html>

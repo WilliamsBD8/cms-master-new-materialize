@@ -49,13 +49,15 @@ class AuthController extends BaseController
         if($validationCaptcha){
             $user = new User();
             $data = $user
-                ->select(['users.*', 'roles.name as role_name'])
-                ->join('roles', 'roles.id = users.role_id')
+            ->withDeleted(false)
+            ->groupStart()
                 ->where('username', $username)
-                ->orWhere('email', $username)->first();
-            if ($data) {
+                ->orWhere('email', $username)
+            ->groupEnd()
+            ->first();
+            
+            if (!empty($data)) {
                 if ($data->status == 'active') {
-                    $data->password = $user->getPassword($data->id);
                     if((int) $data->password->attempts < 5){
                         if (password_verify($password, $data->password->password)) {
                             $session = session();
@@ -100,7 +102,7 @@ class AuthController extends BaseController
                 return $this->respond([
                     'status'    => '403',
                     'title'     => 'Validación de usuario',
-                    'message'   => 'Las credenciales no concuerdan 1.'
+                    'message'   => 'Las credenciales no concuerdan.'
                 ]);
                 // return redirect()->to(base_url(['login']))->with('errors', 'Las credenciales no concuerdan.');
             }

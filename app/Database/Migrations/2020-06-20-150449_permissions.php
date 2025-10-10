@@ -7,9 +7,13 @@ class Permissions extends Migration
 	public function up()
 	{
 		$this->forge->addField([
-		    'id'            => ['type' => 'INT','constraint' => 11, 'auto_increment' => TRUE, 'unsigned' => TRUE],
-            'role_id'       => ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE],
-            'menu_id'       => ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE],
+		    'id'       	=> ['type' => 'INT','constraint' => 11, 'auto_increment' => TRUE, 'unsigned' => TRUE],
+            'role_id'	=> ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE],
+            'menu_id'	=> ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE],
+			'created' 	=> ['type' => 'BOOLEAN', 'default' => TRUE],
+			'read' 		=> ['type' => 'BOOLEAN', 'default' => TRUE],
+			'update' 	=> ['type' => 'BOOLEAN', 'default' => TRUE],
+			'delete' 	=> ['type' => 'BOOLEAN', 'default' => TRUE],
         ]);
 		$this->forge->addKey('id', TRUE);
 		$this->forge->addForeignKey('role_id', 'roles', 'id');

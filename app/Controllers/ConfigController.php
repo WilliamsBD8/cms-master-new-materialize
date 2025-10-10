@@ -31,7 +31,7 @@ class ConfigController extends BaseController
                 $this->crud->unsetColumns(['password']);
                 $this->crud->fieldType('password', 'password');
                 $this->crud->callbackBeforeInsert(function ($stateParameters) {
-                    $stateParameters->data['password'] = password_hash($stateParameters->data['password'], PASSWORD_DEFAULT);
+                    // $stateParameters->data['password'] = password_hash($stateParameters->data['password'], PASSWORD_DEFAULT);
                     return $stateParameters;
                 });
                 // $this->crud->callbackBeforeUpdate(function ($stateParameters) {
@@ -49,6 +49,18 @@ class ConfigController extends BaseController
                 $subtitle = 'Listado de permisos.';
                 $this->crud->setRelation('role_id', 'roles', 'name');
                 $this->crud->setRelation('menu_id', 'menus', '{option} - {type}');
+
+                $this->crud->displayAs([
+                    'created' => 'Crear',
+                    'read' => 'Leer',
+                    'update' => 'Actualizar',
+                    'delete' => 'Eliminar'
+                ]);
+
+                $this->crud->fieldType('created', 'checkbox_boolean');
+                $this->crud->fieldType('read', 'checkbox_boolean');
+                $this->crud->fieldType('update', 'checkbox_boolean');
+                $this->crud->fieldType('delete', 'checkbox_boolean');
                 break;
             case 'menus':
                 $title = 'Opciones del Menu';

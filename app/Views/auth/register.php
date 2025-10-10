@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/fonts/remixicon/remixicon.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/fonts/flag-icons.css"]) ?>" />
 
+    <link rel="stylesheet" href="<?= base_url(['assets/vendor/libs/toastr/toastr.css']) ?>" />
+    <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/sweetalert2/sweetalert2.css"]) ?>" />
+
     <?php
       $color_primary = isset(configInfo()['primary_color']) && !empty(configInfo()['primary_color']) ? configInfo()['primary_color'] : '8e24aa';
       $secondary_color = isset(configInfo()['secundary_color']) && !empty(configInfo()['secundary_color']) ? configInfo()['secundary_color'] : 'ff6e40';
@@ -203,8 +206,9 @@
 
     <!-- Page JS -->
     <!-- <script src="<?= base_url(["assets/js/pages-auth.js"]) ?>"></script> -->
-    <script src="<?= base_url(["master/js/functions/functions.js"]) ?>"></script>
-    <script src="<?= base_url(["master/js/auth/register.js"]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/functions.js?v=".getCommit()]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/fetchHelper.js?v=".getCommit()]) ?>"></script>
+    <script src="<?= base_url(["master/js/auth/register.js?v=".getCommit()]) ?>"></script>
 </body>
 
 </html>

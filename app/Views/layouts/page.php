@@ -14,7 +14,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title><?= $this->renderSection('title') ?></title>
+    <title><?= $this->renderSection('title') ?> | <?= isset(configInfo()['name_app']) && !empty(configInfo()['name_app']) ? configInfo()['name_app'] : "Name App" ?></title>
 
     <meta name="description" content="" />
 
@@ -74,6 +74,8 @@
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/typeahead-js/typeahead.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/apex-charts/apex-charts.css"]) ?>" />
     <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/swiper/swiper.css"]) ?>" />
+    <link rel="stylesheet" href="<?= base_url(['assets/vendor/libs/toastr/toastr.css']) ?>" />
+    <link rel="stylesheet" href="<?= base_url(["assets/vendor/libs/sweetalert2/sweetalert2.css"]) ?>" />
 
     <!-- Page CSS -->
     <?= $this->renderSection('styles') ?>
@@ -156,6 +158,9 @@
     <script src="<?= base_url(["assets/vendor/libs/i18n/i18n.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/libs/typeahead-js/typeahead.js"]) ?>"></script>
     <script src="<?= base_url(["assets/vendor/js/menu.js"]) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/toastr/toastr.js']) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/sweetalert2/sweetalert2.js']) ?>"></script>
+    <script src="<?= base_url(['assets/vendor/libs/flatpickr/flatpickr.js']) ?>"></script>
 
 
     <!-- endbuild -->

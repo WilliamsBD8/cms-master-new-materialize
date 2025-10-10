@@ -3,14 +3,42 @@ $(() => {
   jQuery(document).ready(function() {
       jQuery('.gc-container').groceryCrud({
           callbackAfterUpdate: function () {
-              replace_colors()
+              replace_colors();
+              
+              formatCheckboxBoolean();
           },
           callbackAfterInsert: function () {
-              replace_colors()
+              replace_colors();
+              
+              formatCheckboxBoolean();
           },
       });
   });
 });
+
+function formatCheckboxBoolean() {
+  $('input[type="checkbox"][name*="checkbox_boolean"]').each(function() {
+      const $checkbox = $(this);
+
+      // Evita aplicar doble formato
+      if ($checkbox.closest('.form-check').length > 0) return;
+
+      const id = $checkbox.attr('id') || 'chk_' + Math.random().toString(36).substring(2, 9);
+      const name = $checkbox.attr('name');
+      const checked = $checkbox.prop('checked');
+
+      // Crear estructura Bootstrap
+      const $wrapper = $(`
+          <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="${id}" name="${name}" ${checked ? 'checked' : ''}>
+              <label class="form-check-label" for="${id}">${checked ? 'Checked' : 'Unchecked'}</label>
+          </div>
+      `);
+
+      $checkbox.replaceWith($wrapper);
+  });
+}
+
 
 function replace_colors(){
   if($('input[name="primary_color"]').val() != undefined){

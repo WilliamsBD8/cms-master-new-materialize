@@ -479,6 +479,9 @@ var FieldInput = function (_React$Component) {
     }, {
         key: '__type_checkbox_boolean',
         value: function __type_checkbox_boolean(fieldName, data) {
+            console.log([
+                fieldName, data
+            ])
             return _react2.default.createElement(_checkboxBoolean2.default, { key: fieldName, data: data });
         }
     }, {
@@ -1332,15 +1335,20 @@ var InputCheckboxBoolean = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                null,
+                { className: 'form-check' },
                 _react2.default.createElement('input', { value: fieldValue,
                     disabled: isReadOnly,
                     checked: isChecked,
+                    id: fieldName.split(' ').join('_').toLowerCase(),
                     type: 'checkbox',
+                    className: 'form-check-input',
                     onChange: this.linkedChange.bind(this) }),
                 _react2.default.createElement('input', { name: fieldName,
                     value: fieldValue,
-                    type: 'hidden' })
+                    type: 'hidden' }),
+                // _react2.default.createElement('label', { for: fieldName,
+                //     className: 'form-check-label' },
+                //     fieldName),
             );
         }
     }]);
@@ -18995,14 +19003,16 @@ var FieldRowWrapper = function (_React$Component) {
                 inputUpdates = _props.inputUpdates;
             
             var type_input = data.fieldType;
-            var label_input = type_input == 'upload' || type_input == 'relational' ? true : false;
+            var label_input = type_input == 'upload' || type_input == 'relational' || type_input == 'checkbox_boolean' ? true : false;
 
             return _react2.default.createElement(
                 'div',
                 { className: 'form-group' },
                 label_input ? _react2.default.createElement(
                     'label',
-                    { className: 'col-sm-3 control-label' },
+                    type_input == 'checkbox_boolean' ?
+                        {className: 'col-sm-3 control-label form-check-label', for: data.fieldName.split(' ').join('_').toLowerCase() } :
+                        { className: 'col-sm-3 control-label' },
                     isRequired ? '*' : '',
                     displayAs
                 ) : '',

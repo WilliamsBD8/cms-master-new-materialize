@@ -14,7 +14,11 @@ class Users extends Migration
             // 'password'  			=> ['type' => 'VARCHAR', 'constraint' => 100],
             'status'    			=> ['type' => 'ENUM("active", "inactive")', 'default' => 'inactive'],
             'photo'     			=> ['type' => 'VARCHAR', 'constraint' => 100, 'null' => TRUE],
-            'role_id'   			=> ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE]
+            'role_id'   			=> ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE],
+
+            'created_at DATETIME DEFAULT CURRENT_TIMESTAMP',
+        	'updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+            'deleted_at'			=> ['type' => 'DATETIME', 'null' => TRUE],
         ]);
 		$this->forge->addKey('id', TRUE);
 		$this->forge->addForeignKey('role_id', 'roles', 'id');

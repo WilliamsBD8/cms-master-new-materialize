@@ -2,60 +2,88 @@
 
 
 namespace App\Controllers;
-
+use CodeIgniter\API\ResponseTrait;
 
 use App\Models\User;
+use App\Models\Role;
 use Config\Services;
 
 
 class UserController extends BaseController
 {
+    use ResponseTrait;
+
     public function perfile()
     {
+		$r_model = new Role();
         $validation = Services::validation();
         $user = new User();
-        $data = $user->select('*, roles.name as role_name, users.name as name')
-            ->join('roles', 'users.role_id = roles.id')
-            ->where('users.id', session('user')->id)
-            ->get()->getResult()[0];
+        $data = $user->find(session('user')->id);
+        $roles = $r_model->findAll();
 
-        echo view('users/perfile',[ 'data' => $data, 'validation' => $validation]);
+        return view('users/perfile', [
+            'data'          => $data,
+            'validation'    => $validation,
+			'roles' 	    => $roles,
+        ]);
     }
 
     public function updateUser()
     {
-        if ($this->validate([
-            'name'              => 'required|max_length[45]',
-            'username'          => 'required|max_length[40]',
-            'email'             => 'required|valid_email|max_length[100]',
-        ], [
-            'name' => [
-                'required'      => 'El campo Nombres y Apellidos es obrigatorio.',
-                'max_length'    => 'El campo Nombres Y Apellidos no debe terner mas de 45 caracteres.'
-            ],
-            'username' => [
-                'required'      => 'El campo Nombre de Usuario es obligatorio',
-                'max_length'    => 'El campo Nombre de Usuario no puede superar mas de 20 caracteres.'
-            ],
-            'email' => [
-                'required'      => 'El campo Correo Electronico es obrigatorio.',
-            ]
+        try{
+			$data = $this->request->getJson();
+			$validation = \Config\Services::validation();
+			$id = session('user')->id;
 
-        ])) {
-            $data = [
-                'name'          => $this->request->getPost('name'),
-                'username'      => $this->request->getPost('username'),
-                'email'         => $this->request->getPost('email'),
-            ];
+			$rules = [
+				'name'      => 'required|min_length[3]|max_length[50]',
+				'username'  => "required|alpha_numeric|min_length[4]|is_unique[users.username,id,{$id}]",
+				'email'     => "required|valid_email|is_unique[users.email,id,{$id}]"
+			];
 
+			$messages = [
+				'email' => [
+					'is_unique' => 'El correo electrónico ya está registrado por otro usuario.'
+				],
+				'username' => [
+					'is_unique' => 'El nombre de usuario ya está en uso.'
+				]
+			];
 
+			if (!$validation->setRules($rules, $messages)->run((array) $data)) {
+				return $this->respond([
+					'status' 	=> 'error',
+					'title'		=> 'Validación fallida '. $id,
+					'errors' 	=> $validation->getErrors()
+				], 200);
+			}
 
-            $user = new User();
-            $user->set($data)->where(['id' => session('user')->id])->update();
-            return redirect()->to('/perfile')->with('success', 'Datos guardado correctamente.');
-        } else {
-            return redirect()->to('/perfile')->withInput();
-        }
+			$user = [
+				'id'		=> $id,
+				'name'		=> $data->name,
+				'username'	=> $data->username,
+				'email'		=> $data->email
+			];
+
+			if($id == 1){
+				$user['role_id'] = $data->rol;
+			}
+
+			$u_model = new User();
+			$u_model->save($user);
+
+			$info = $u_model->find($id);
+			$session = session();
+			$session->set('user', $info);
+
+			return $this->respond([
+				'status' => 'success',
+				'message' => 'Datos de perfil actualizados correctamente.'
+			], 200);
+
+		}catch(\Exception $e){
+			return $this->respond(['title' => 'Error en el servidor', 'error' => $e->getMessage()], 500);
+		}
     }
 
 
@@ -70,5 +98,12 @@ class UserController extends BaseController
             session('user')->photo = $newName;
             return redirect()->to('/perfile');
         }
+    }
+
+    public function deleteUser($id){
+        $u_model = new User();
+        $u_model->delete($id);
+        session()->destroy();
+        return redirect()->to(base_url(['login']));
     }
 }

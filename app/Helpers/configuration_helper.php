@@ -63,3 +63,7 @@ function lightenColor($hex, $percent) {
     // Convertir de vuelta a HEX y retornar el nuevo color
     return sprintf("#%02x%02x%02x", (int)$r, (int)$g, (int)$b);
 }
+
+function getCommit(){
+    return env('GIT_COMMIT_HASH', strtotime(date('Y-m-d H:i:s')));
+}
