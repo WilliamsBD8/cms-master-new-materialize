@@ -1,14 +1,59 @@
 $(() => {
     const dropzoneBasic = document.querySelector('#dropzone-basic');
+
     if (dropzoneBasic) {
         const myDropzone = new Dropzone(dropzoneBasic, {
+            url: "#", // No se usará, pero Dropzone requiere un valor
+            autoProcessQueue: false, // Evita que Dropzone haga el upload automático
+            paramName: "photo",
             previewTemplate: previewTemplate(),
             parallelUploads: 1,
-            maxFilesize: 5,
-            addRemoveLinks: true,
-            maxFiles: 1
+            maxFilesize: 5, // MB
+            acceptedFiles: "image/*",
+            maxFiles: 1,
+            addRemoveLinks: false,
+            dictRemoveFile: "Eliminar",
+            dictDefaultMessage: "Arrastra tu imagen o haz clic para subirla",
+            init: function () {
+                this.on("addedfile", async function (file) {
+                    try {
+                        // Convertir imagen a base64
+                        const base64 = await toBase64(file);
+                        const url = base_url(['dashboard/perfile']);
+                        const data = {
+                            photo: base64
+                        }
+
+                        const result = await fetchHelper.post(url, data, {}, 0);
+            
+                        if (result.status === "success") {
+                            toastr.success(result.message || "Foto actualizada correctamente");
+                
+                            window.location.reload();
+                
+                            // Limpiar Dropzone
+                            this.removeAllFiles();
+                        } else {
+                            toastr.error(result.message || "Error al subir la imagen");
+                        }
+                    } catch (error) {
+                      console.error("Error al subir la imagen:", error);
+                      toastr.error("Error al procesar la imagen");
+                    }
+                });
+
+                this.on("error", function (file, response) {
+                    toastr.error("Error al subir la imagen");
+                });
+
+                this.on("maxfilesexceeded", function (file) {
+                    this.removeAllFiles();
+                    this.addFile(file);
+                });
+            }
         });
     }
+
 
     const select2 = $('.form-select');
     
@@ -60,6 +105,7 @@ async function onSubmit(e, id_form){
             break;
     
         default:
+            window.location.reload();
             Swal.fire({
                 title: 'Datos actualizados con éxito.',
                 text: res.message,

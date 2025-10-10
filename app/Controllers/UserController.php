@@ -89,15 +89,69 @@ class UserController extends BaseController
 
     public function updatePhoto()
     {
+		helper(['filesystem']);
         $user = new User();
-        if($img = $this->request->getFile('photo')){
-            $newName = $img->getRandomName();
-            $img->move('upload/images', $newName);
-        }
-        if($user->update(['photo' => $newName], ['id' => session('user')->id])){
-            session('user')->photo = $newName;
-            return redirect()->to('/perfile');
-        }
+
+		$data = $this->request->getJSON();
+    	$base64 = $data->photo ?? null;
+
+        if (!$base64) {
+			return $this->respond([
+				'status' => 'error',
+				'message' => 'No se recibió ninguna imagen'
+			]);
+		}
+
+		// Validar formato base64
+		if (preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
+			$type = strtolower($type[1]);
+			if (!in_array($type, ['png', 'jpg', 'jpeg', 'webp'])) {
+				return $this->respond([
+					'status' => 'error',
+					'message' => 'Formato de imagen no permitido'
+				]);
+			}
+	
+			// Decodificar y guardar archivo
+			$base64 = substr($base64, strpos($base64, ',') + 1);
+			$base64 = base64_decode($base64);
+	
+			$newName = uniqid('user_') . '.' . $type;
+			$filePath = FCPATH . 'upload/images/' . $newName;
+			write_file($filePath, $base64);
+	
+			// Actualizar base de datos
+			$updated = $user->save(
+				[
+					'id'	=> session('user')->id,
+					'photo' => $newName
+				]
+			);
+	
+			if ($updated) {
+				// Actualizar la sesión
+				$session = session();
+				$userData = $session->get('user');
+				$userData->photo = $newName;
+				$session->set('user', $userData);
+	
+				return $this->respond([
+					'status' => 'success',
+					'message' => 'Foto de perfil actualizada correctamente',
+					'file' => $newName
+				]);
+			}
+	
+			return $this->respond([
+				'status' => 'error',
+				'message' => 'No se pudo actualizar la foto'
+			]);
+		}
+	
+		return $this->respond([
+			'status' => 'error',
+			'message' => 'Formato Base64 inválido'
+		]);
     }
 
     public function deleteUser($id){
