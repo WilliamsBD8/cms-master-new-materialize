@@ -10,7 +10,7 @@ class Menus extends Migration
 		    'id'            => ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE ],
             'option'        => ['type' => 'VARCHAR', 'constraint' => 40 ],
             'url'           => ['type' => 'VARCHAR', 'constraint'=> 100 ],
-            'icon'          => ['type' => 'VARCHAR', 'constraint' => 20, 'null' => TRUE],
+            'icon'          => ['type' => 'VARCHAR', 'constraint' => 50, 'null' => TRUE],
             'position'      => ['type' => 'INT', 'constraint' => 3, 'null' => TRUE],
             'type'          => ['type' => 'ENUM("primario", "secundario")', 'default' => 'primario'],
             'references'    => ['type' => 'INT', 'constraint' => 11 , 'null' => TRUE],
