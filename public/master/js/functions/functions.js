@@ -96,10 +96,15 @@ function validData(id_form){
   return {isValid: isValid, data: data};
 }
 
-function base_url(array = []) {
-  var url = localStorage.getItem('url');
-  if (array.length == 0) return `${url}`;
-  else return `${url}${array.join('/')}`;
+function base_url(array = [], get = {}) {
+  var url = localStorage.getItem('url') || ''; // Asegurar que haya una URL base
+  var path = array.length > 0 ? array.join('/') : ''; // Construir el path
+  var getData = Object.entries(get)
+      .filter(([_, value]) => value !== undefined && value !== null && value !== '') // Filtrar valores vacíos
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`) // Codificar valores
+      .join('&');
+
+  return getData ? `${url}${path}?${getData}` : `${url}${path}`;
 }
 
 const separador_miles = (numero) => {
