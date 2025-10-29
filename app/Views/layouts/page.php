@@ -175,7 +175,7 @@
     <script>
         const user = <?= json_encode(session('user')) ?>;
     </script>
-    <script src="<?= base_url(["master/js/functions/functions.js"]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/functions.js?v=".getCommit()]) ?>"></script>
     <script src="<?= base_url(["master/js/functions/fetchHelper.js?v=".getCommit()]) ?>"></script>
     
     <?= $this->renderSection('javaScripts') ?>
