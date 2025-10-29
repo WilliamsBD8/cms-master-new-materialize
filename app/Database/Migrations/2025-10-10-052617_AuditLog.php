@@ -10,12 +10,14 @@ class AuditLog extends Migration
     {
         $this->forge->addField([
             'id'            => ['type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment'  => TRUE],
+            'action'        => ['type' => 'Enum("Created", "Updated", "Deleted")', 'null' => FALSE],
             'table_name'    => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => FALSE],
             'column_name'   => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => FALSE],
             'record_id'     => ['type' => 'INT', 'constraint' => '11', 'null' => FALSE],
             'old_value'     => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => FALSE],
             'new_value'     => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => FALSE],
             'changed_by'    => ['type' => 'INT', 'constraint' => '11', 'unsigned' => TRUE, 'null' => TRUE],
+            'user'          => ['type' => 'VARCHAR', 'constraint' => 255],
             'created_at DATETIME DEFAULT CURRENT_TIMESTAMP',
         ]);
 

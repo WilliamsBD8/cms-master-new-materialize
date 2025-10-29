@@ -28,7 +28,7 @@ function menus(){
     $m_model = new Menu();
     $permission = new Permission();
     if (session()->get('user')->role_id == 1) {
-        $data = $m_model->where(['type' => 'primario', 'status' => 'active'])->findAll();
+        $data = $m_model->where(['type' => 'primario', 'status' => 'active'])->orderBy('position', 'ASC')->findAll();
     } else {
         $data = $permission->select('menus.*')
             ->where([

@@ -49,7 +49,7 @@
                 <li class="menu-item <?= subActive($menu->id) ?>">
                     <a href="<?= $menu->base_url ?>" class="menu-link menu-toggle">
                         <?php if(!empty($menu->icon)): ?>
-                            <?= $menu->icon ?>
+                            <i class="menu-icon tf-icons <?= $menu->icon ?>"></i>
                         <?php else: ?>
                             <i class="menu-icon tf-icons ri-radio-button-line"></i>
                         <?php endif ?>
