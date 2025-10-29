@@ -132,13 +132,11 @@ function default_buttons(){
                 }
 
                 const url = base_url(['dashboard/brand_portfolio/data'], getData);
-                const data = await fetchHelper.get(url);
-
-                console.log(data)
+                const {data: dataExport} = await fetchHelper.get(url);
 
                 // 🔹 Recargar datos temporalmente
                 dt.clear();
-                dt.rows.add(data);
+                dt.rows.add(dataExport);
                 dt.draw();
         
                 // 🔹 Ejecutar exportación normal de Excel
@@ -172,13 +170,11 @@ function default_buttons(){
                 }
 
                 const url = base_url(['dashboard/brand_portfolio/data'], getData);
-                const data = await fetchHelper.get(url);
-
-                console.log(data)
+                const {data: dataExport} = await fetchHelper.get(url);
 
                 // 🔹 Recargar datos temporalmente
                 dt.clear();
-                dt.rows.add(data);
+                dt.rows.add(dataExport);
                 dt.draw();
             
                 $.fn.dataTable.ext.buttons.csvHtml5.action.call(this, e, dt, button, config);
@@ -188,6 +184,8 @@ function default_buttons(){
             extend: 'pdf',
             text: '<i class="ri-file-pdf-2-line me-1"></i><span class="d-none d-sm-inline-block">PDF</span>',
             className: 'btn rounded-pill btn-label-danger waves-effect mx-2 mt-2',
+            filename: `Reporte_${info_page.title.replace(/\s+/g, "_").toLowerCase()}`,
+            title: `Reporte de ${info_page.title}`,
             action: async function (e, dt, button, config) {
                 // 🔹 Traer columnas visibles
                 const visibleColumns = dt.columns(':visible').indexes().toArray();
@@ -209,13 +207,11 @@ function default_buttons(){
                 }
 
                 const url = base_url(['dashboard/brand_portfolio/data'], getData);
-                const data = await fetchHelper.get(url);
-
-                console.log(data)
+                const {data: dataExport} = await fetchHelper.get(url);
 
                 // 🔹 Recargar datos temporalmente
                 dt.clear();
-                dt.rows.add(data);
+                dt.rows.add(dataExport);
                 dt.draw();
             
                 $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
