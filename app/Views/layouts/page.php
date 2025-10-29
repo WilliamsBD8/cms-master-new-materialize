@@ -172,7 +172,11 @@
     <script src="<?= base_url(["assets/vendor/libs/swiper/swiper.js"]) ?>"></script>
 
     <!-- Page JS -->
+    <script>
+        const user = <?= json_encode(session('user')) ?>;
+    </script>
     <script src="<?= base_url(["master/js/functions/functions.js"]) ?>"></script>
+    <script src="<?= base_url(["master/js/functions/fetchHelper.js?v=".getCommit()]) ?>"></script>
     
     <?= $this->renderSection('javaScripts') ?>
   </body>
